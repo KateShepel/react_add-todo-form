@@ -15,12 +15,49 @@ export const App = () => {
   const [visibleTodos, setVisibleTodos] = useState(todos);
   const [title, setTitle] = useState('');
   const [chosenUser, setChosenUser] = useState(0);
+  const [error, setError] = useState(false);
+
+  const addTodo = () => {
+    const getId = visibleTodos.reduce((acc, todo) => {
+      if (todo.id > acc) {
+        acc = todo.id;
+      }
+
+      return acc;
+    }, 0) + 1;
+
+    const newTodo = {
+      id: getId,
+      title: title,
+      completed: false,
+      userId: chosenUser,
+      user: usersFromServer.find(u => u.id === chosenUser),
+    }
+
+    setVisibleTodos([...visibleTodos, newTodo]);
+  }
+
+  const reset = () => {
+    setTitle('');
+    setChosenUser(0);
+    setError(false);
+  }
 
   return (
     <div className="App">
       <h1>Add todo form</h1>
 
-      <form action="/api/todos" method="POST" onSubmit={() => {}}>
+      <form action="/api/todos" method="POST" onSubmit={(e) => {
+        e.preventDefault();
+
+        if (!title || !chosenUser) {
+          setError(true);
+          return;
+        }
+
+        addTodo();
+        reset();
+      }}>
         <div className="field">
           <label htmlFor="title">
             Title:
@@ -29,16 +66,20 @@ export const App = () => {
               type="text"
               id="title"
               data-cy="titleInput"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
             />
           </label>
 
-          {!title && <span className="error">Please enter a title</span>}
+          {!title && error && <span className="error">Please enter a title</span>}
         </div>
 
         <div className="field">
           <label htmlFor="user">
             User:
-            <select value={chosenUser} id="user" data-cy="userSelect">
+            <select value={chosenUser} id="user" data-cy="userSelect" onChange={e => {
+              setChosenUser(+e.target.value)
+              }}>
               <option value="0" disabled>
                 Choose a user
               </option>
@@ -50,7 +91,7 @@ export const App = () => {
             </select>
           </label>
 
-          {!chosenUser && <span className="error">Please choose a user</span>}
+          {!chosenUser && error && <span className="error">Please choose a user</span>}
         </div>
 
         <button type="submit" data-cy="submitButton">
