@@ -18,13 +18,14 @@ export const App = () => {
   const [error, setError] = useState(false);
 
   const addTodo = () => {
-    const getId = visibleTodos.reduce((acc, todo) => {
-      if (todo.id > acc) {
-        acc = todo.id;
-      }
+    const getId =
+      visibleTodos.reduce((acc, todo) => {
+        if (todo.id > acc) {
+          return todo.id;
+        }
 
-      return acc;
-    }, 0) + 1;
+        return acc;
+      }, 0) + 1;
 
     const newTodo = {
       id: getId,
@@ -32,32 +33,37 @@ export const App = () => {
       completed: false,
       userId: chosenUser,
       user: usersFromServer.find(u => u.id === chosenUser),
-    }
+    };
 
     setVisibleTodos([...visibleTodos, newTodo]);
-  }
+  };
 
   const reset = () => {
     setTitle('');
     setChosenUser(0);
     setError(false);
-  }
+  };
 
   return (
     <div className="App">
       <h1>Add todo form</h1>
 
-      <form action="/api/todos" method="POST" onSubmit={(e) => {
-        e.preventDefault();
+      <form
+        action="/api/todos"
+        method="POST"
+        onSubmit={e => {
+          e.preventDefault();
 
-        if (!title || !chosenUser) {
-          setError(true);
-          return;
-        }
+          if (!title || !chosenUser) {
+            setError(true);
 
-        addTodo();
-        reset();
-      }}>
+            return;
+          }
+
+          addTodo();
+          reset();
+        }}
+      >
         <div className="field">
           <label htmlFor="title">
             Title:
@@ -71,15 +77,22 @@ export const App = () => {
             />
           </label>
 
-          {!title && error && <span className="error">Please enter a title</span>}
+          {!title && error && (
+            <span className="error">Please enter a title</span>
+          )}
         </div>
 
         <div className="field">
           <label htmlFor="user">
             User:
-            <select value={chosenUser} id="user" data-cy="userSelect" onChange={e => {
-              setChosenUser(+e.target.value)
-              }}>
+            <select
+              value={chosenUser}
+              id="user"
+              data-cy="userSelect"
+              onChange={e => {
+                setChosenUser(+e.target.value);
+              }}
+            >
               <option value="0" disabled>
                 Choose a user
               </option>
@@ -91,7 +104,9 @@ export const App = () => {
             </select>
           </label>
 
-          {!chosenUser && error && <span className="error">Please choose a user</span>}
+          {!chosenUser && error && (
+            <span className="error">Please choose a user</span>
+          )}
         </div>
 
         <button type="submit" data-cy="submitButton">
