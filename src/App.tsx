@@ -73,7 +73,7 @@ export const App = () => {
               id="title"
               data-cy="titleInput"
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={event => setTitle(event.target.value)}
             />
           </label>
 
@@ -89,8 +89,8 @@ export const App = () => {
               value={chosenUser}
               id="user"
               data-cy="userSelect"
-              onChange={e => {
-                setChosenUser(+e.target.value);
+              onChange={event => {
+                setChosenUser(+event.target.value);
               }}
             >
               <option value="0" disabled>
